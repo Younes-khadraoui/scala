@@ -1,0 +1,45 @@
+Consignes TP 01
+
+- Créer un répertoire VSCode et un sous-répertoire ST dans lequel seront stockés tous
+ les TP du semestre.
+- Dans VSCode\ST, créer un fichier build.sbt avec le contenu suivant :
+
+ThisBuild / version := "0.1.0-SNAPSHOT"
+ThisBuild / scalaVersion := "3.3.6"
+lazy val root = (project in file("."))
+  .settings(
+    name := "ST"
+  )
+libraryDependencies += "junit" % "junit" % "4.13.2" % "test"
+libraryDependencies += "org.scalatest" %% "scalatest" % "3.2.15" % "test"
+libraryDependencies += "org.scalatestplus" %% "junit-4-13" % "3.2.15.0" % "test"
+libraryDependencies += "org.scalactic" %% "scalactic" % "3.2.15"
+libraryDependencies += "org.scala-lang.modules" %% "scala-parser-combinators" % "2.1.1"
+
+- Lancer Visual Studio Code.
+- Cliquer sur File -> Open Folder.
+- Sélectionner le répertoire VSCode\ST.
+- Cliquer sur l'icone Metals (M stylisé, colonne de gauche).
+- Cliquer New Scala Project.
+- Sélectionner le template scala/scala3.g8.
+- Sélectionner le répertoire VSCode.
+- Donner le nom "st" au projet, puis taper "Entrée".
+- Cliquer sur l'icone Metals, puis Import Build (ou sur le bouton Import Build
+ apparu en bas à droite)
+
+Si tout s'est bien déroulé, votre projet ST est créé. Vous pouvez accéder à l'explorateur
+ de fichier de VS Code (l'icone en haut à gauche) et vous pouvez tester :
+- une exécution (run) du fichier Main.scala (accessible dans src\main\scala) ;
+- une exécution (clic droit, puis Run Tests) du test dans MySuite.scala (src\test\scala)
+
+- Dans le répertoire src/test/scala, décompresser tp01tests.zip.
+- Dans le répertoire src/main/scala, décompresser tp01sources.zip.
+- Compléter les trois fichiers que vous avez déposés dans le répertoire src/main/scala
+ en suivant les indications données en commentaires.
+ Commencer par Complex, puis Pascal et enfin MultiSet.
+- Attention : les fichiers de tests ne compilent pas tant que vous n'avez pas développé
+ certains éléments (par exemple, certains objets singletons ou des méthodes non spécifiées).
+
+Remarque : vous vous efforcerez de programmer dans un style fonctionnel (pas de var, ni
+ d'objets mutables, pas de boucles while, favorisez au contraire l'utilisation de la
+ récursivité, le pattern matching et, bien sûr, explorez l'API Scala).

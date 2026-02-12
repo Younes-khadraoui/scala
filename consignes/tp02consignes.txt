@@ -1,0 +1,12 @@
+Consignes TP 02
+
+Cette séance a pour objet le développement d'une petite application permettant de
+ calculer les anagrammes d'un mot ou d'une phrase.
+Dans cette optique, un dictionnaire français simplifié (suppression des majuscules,
+ accents, trémas, ...) est fourni avec les ressources.
+
+- Dans le répertoire src/test/scala, créé lors de la première séance, décompresser
+ tp02tests.zip.
+- Dans le répertoire src/main/scala, créé lors de la première séance, décompresser
+ tp02sources.zip.
+- Compléter le fichier source en suivant les indications données en commentaires.

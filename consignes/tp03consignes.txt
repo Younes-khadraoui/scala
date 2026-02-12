@@ -1,0 +1,14 @@
+Consignes TP 03
+
+Cette séance a pour objet le développement d'une application permettant d'encoder
+ et décoder des messages via la méthode de Huffman.
+
+- Vous avez dû étudier cette méthode en Algorithmique du Texte.
+ Vous pouvez aussi trouver de nombreuses informations à ce sujet sur le web.
+ Un petit exemple clair est décrit au bout de ce lien : 
+ https://hbfs.wordpress.com/2011/05/17/huffman-codes/
+- Dans le répertoire src/test/scala, créé lors de la première séance, décompresser
+ tp03tests.zip.
+- Dans le répertoire src/main/scala, créé lors de la première séance, décompresser
+ tp03sources.zip.
+- Compléter le fichier source en suivant les indications données en commentaires.
