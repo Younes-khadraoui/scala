@@ -29,18 +29,23 @@ object Huffman {
   /**
    * Le poids d'un arbre est celui de sa racine.
    */
-  def weight(tree: HuffmanTree): Int = ???
-  
+  def weight(tree: HuffmanTree): Int = tree match
+    case Leaf(_, w)      => w
+    case Node(_, _, _, w) => w
+
   /**
    * La liste des caractères associés à la racine de "tree".
    */
-  def chars(tree: HuffmanTree): List[Char] = ???
-  
+  def chars(tree: HuffmanTree): List[Char] = tree match
+    case Leaf(c, _)       => List(c)
+    case Node(_, _, cs, _) => cs
+
   /**
    * Renvoie un nouveau code de Huffman en faisant de "left" son sous-arbre
    *  gauche et de "right" son sous-arbre droit.
    */
-  def buildTree(left: HuffmanTree, right: HuffmanTree): HuffmanTree = ???
+  def buildTree(left: HuffmanTree, right: HuffmanTree): HuffmanTree =
+    Node(left, right, chars(left) ++ chars(right), weight(left) + weight(right))
 
   /**
    * Renvoie une liste de feuilles (codes de Huffman de taille 1), obtenue en
@@ -49,7 +54,10 @@ object Huffman {
    *  List(Leaf('a', 2), Leaf('b', 1)) ou List(Leaf('b', 1), Leaf('a', 2))
    * Il n'y a pas d'ordre imposé sur les éléments de la liste retournée.
    */
-  def buildLeaves(chars: List[Char]): List[Leaf] = ???
+  def buildLeaves(chars: List[Char]): List[Leaf] =
+    chars.groupBy(identity)
+         .map { (c, cs) => Leaf(c, cs.length) }
+         .toList
 
   /**
    * On suppose que "trees" est ordonnée par poids croissants.
@@ -58,24 +66,52 @@ object Huffman {
    * Cette fonction est pratique lorsqu'on réalise un tri (par
    *  insertion) d'une liste d'arbres.
    */
-  def insert[T<:HuffmanTree](t: T, trees: List[T]): List[T] = ???
+  def insert[T<:HuffmanTree](t: T, trees: List[T]): List[T] = trees match
+    case Nil => List(t)
+    case head :: tail =>
+      if weight(t) <= weight(head) then t :: trees
+      else head :: insert(t, tail)
 
   /**
    * Renvoie un code de Huffman à partir de "leaves".
    */
-  def buildHuffmanTree(leaves: List[Leaf]): HuffmanTree = ???
-  
+  def buildHuffmanTree(leaves: List[Leaf]): HuffmanTree =
+    val sorted = leaves.sortBy(weight)
+    def merge(trees: List[HuffmanTree]): HuffmanTree = trees match
+      case t :: Nil => t
+      case t1 :: t2 :: rest => merge(insert(buildTree(t1, t2), rest))
+      case Nil => throw new IllegalArgumentException("empty list")
+    merge(sorted)
+
   /**
    * Décode la liste de bits "bits" avec le code "tree".
    */
-  def decode(tree: HuffmanTree, bits: List[Bit]): List[Char] = ???
-  
+  def decode(tree: HuffmanTree, bits: List[Bit]): List[Char] =
+    def go(current: HuffmanTree, remaining: List[Bit]): List[Char] =
+      current match
+        case Leaf(c, _) =>
+          if remaining.isEmpty then List(c)
+          else c :: go(tree, remaining)
+        case Node(left, right, _, _) =>
+          remaining match
+            case Nil => Nil
+            case 0 :: rest => go(left, rest)
+            case _ :: rest => go(right, rest)
+    go(tree, bits)
+
   /**
    * Renvoie la liste de bits obtenue par encodage du texte "text" avec
    *  le code de Huffman "tree".
    */
-  def encode(tree: HuffmanTree, text: List[Char]): List[Bit] = ???
-  
+  def encode(tree: HuffmanTree, text: List[Char]): List[Bit] =
+    def encodedChar(current: HuffmanTree, c: Char): List[Bit] =
+      current match
+        case Leaf(_, _) => Nil
+        case Node(left, right, _, _) =>
+          if chars(left).contains(c) then 0 :: encodedChar(left, c)
+          else 1 :: encodedChar(right, c)
+    text.flatMap(encodedChar(tree, _))
+
   /**
    * Un outil plus efficace que l'arbre lui-même pour encoder un message :
    *  une table de codage qui associe son code à chaque caractère. 
@@ -85,12 +121,20 @@ object Huffman {
   /**
    * Convertit l'arbre en une table de codage équivalente.
    */
-  def convert(tree: HuffmanTree): CodeTable = ???
+  def convert(tree: HuffmanTree): CodeTable =
+    def go(current: HuffmanTree, prefix: List[Bit]): CodeTable =
+      current match
+        case Leaf(c, _) => Map(c -> prefix)
+        case Node(left, right, _, _) =>
+          go(left, prefix :+ 0) ++ go(right, prefix :+ 1)
+    go(tree, Nil)
 
   /**
    * Renvoie la liste de bits obtenue par encodage du texte "text" avec
    *  le code de Huffman "tree" (mais en utilisant en interne la table de
    *  codage correspondante).
    */
-  def fastEncode(tree: HuffmanTree, text: List[Char]): List[Bit] = ???
+  def fastEncode(tree: HuffmanTree, text: List[Char]): List[Bit] =
+    val table = convert(tree)
+    text.flatMap(c => table.getOrElse(c, Nil))
 }

@@ -37,24 +37,12 @@ object Anagrams {
    * Les éventuelles majuscules seront assimilées aux caractères minuscules
    *  correspondants.
    */
-  def wordOccurrences(w: Word): Occurrences =
-    w.toLowerCase
-      .groupBy(identity)
-      .view
-      .mapValues(_.length)
-      .toList
-      .sorted
-      
+  def wordOccurrences(w: Word): Occurrences = ???
+
   /** 
    * Convertit une phrase en la liste des fréquences de ses caractères.
    */
-  def sentenceOccurrences(s: Sentence): Occurrences =
-    s.flatMap(wordOccurrences)
-     .groupBy(_._1)
-     .view
-     .mapValues(_.map(_._2).sum)
-     .toList
-     .sorted
+  def sentenceOccurrences(s: Sentence): Occurrences = ???
 
   /** 
    * Une association qui fait correspondre à une liste de
@@ -69,14 +57,12 @@ object Anagrams {
    * Cela revient à regrouper les mots du dictionnaire anagrammes les
    *  uns des autres.
    */
-  lazy val dictionaryByOccurrences: Map[Occurrences, List[Word]] =
-    dictionary.groupBy(wordOccurrences)
+  lazy val dictionaryByOccurrences: Map[Occurrences, List[Word]] = ???
 
   /**
    * Renvoie la liste des anagrammes de "word".
    */
-  def wordAnagrams(word: Word): List[Word] =
-    dictionaryByOccurrences.getOrElse(wordOccurrences(word), Nil)
+  def wordAnagrams(word: Word): List[Word] = ???
 
   /**
    * Retourne la liste de tous les "sous-ensembles" d'une liste de fréquences.
@@ -93,26 +79,12 @@ object Anagrams {
    *      List(('a', 2), ('b', 2))
    *    )
    */
-  def combinations(occurrences: Occurrences): List[Occurrences] =
-    occurrences match
-      case Nil => List(Nil)
-      case (c, n) :: rest =>
-        val restCombos = combinations(rest)
-        for
-          subRest <- restCombos
-          k       <- 0 to n
-        yield
-          if k == 0 then subRest else (c, k) :: subRest
+  def combinations(occurrences: Occurrences): List[Occurrences] = ???
 
   /**
    * Renvoie la liste de fréquences obtenue en retirant "y" à "x".
    */
-  def subtract(x: Occurrences, y: Occurrences): Occurrences =
-    val yMap = y.toMap
-    x.flatMap { (c, n) =>
-      val remaining = n - yMap.getOrElse(c, 0)
-      if remaining > 0 then Some((c, remaining)) else None
-    }
+  def subtract(x: Occurrences, y: Occurrences): Occurrences = ???
 
   /**
    * Renvoie la liste de toutes les phrases anagrammes de "sentence".
@@ -130,15 +102,5 @@ object Anagrams {
    *      List("pal", "us")
    *    )
    */
-  def sentenceAnagrams(sentence: Sentence): List[Sentence] =
-    def go(occ: Occurrences): List[Sentence] =
-      if occ.isEmpty then List(Nil)
-      else
-        for
-          combo <- combinations(occ)
-          if combo.nonEmpty
-          word  <- dictionaryByOccurrences.getOrElse(combo, Nil)
-          rest  <- go(subtract(occ, combo))
-        yield word :: rest
-    go(sentenceOccurrences(sentence))
+  def sentenceAnagrams(sentence: Sentence): List[Sentence] = ???
 }
